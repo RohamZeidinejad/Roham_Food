@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#100C08</color>
+    <color name="white">#FDFFF5</color>
+    <color name="pestei">#93C572</color>
+    <color name="pestei_dark">#A6B398</color>
+</resources>

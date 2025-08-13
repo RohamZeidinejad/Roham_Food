@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    tools:context=".ui.view.MealDetailFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/toolBar"
+            app:contentScrim="@color/pestei"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_304sdp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_loading" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolBar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Hamburger"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/_20ssp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Area:"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Germany"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Category:"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <TextView
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="lamb"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_200sdp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/instruction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_12sdp"
+                android:fontFamily="@font/poppins_regular"
+                android:lineSpacingExtra="@dimen/_2sdp"
+                android:text="Lorem ipsum odor amet, consectetuer adipiscing elit. Ridiculus tempus massa ultrices lobortis rutrum vel habitasse. Nulla tortor adipiscing rhoncus ut ad ad dignissim sollicitudin. Nostra nisi fames dis leo nibh quam vivamus dis. Maecenas mi volutpat vehicula augue elementum hendrerit habitant ut. Quis pretium justo tortor fames nullam quis integer. Tempor etiam eget eleifend congue erat fusce conubia massa. Justo turpis quam sollicitudin nulla cras dapibus suscipit. Phasellus euismod eleifend tellus imperdiet ad phasellus. Lectus elementum blandit aliquet lacinia metus.
+
+Tellus posuere feugiat facilisi platea ultricies. Sit arcu volutpat ornare; porttitor cras natoque. Habitant fermentum quisque aliquam ultrices dictum lacus rhoncus risus. Augue nec curabitur tempor nascetur gravida. Ad congue elementum tortor per conubia, nostra hac lobortis. Vivamus nam vehicula magnis accumsan sed felis. Finibus facilisis ex maximus potenti montes molestie fames vulputate. Tristique phasellus ad molestie quisque; tempus rutrum vestibulum.
+
+Ut platea pellentesque massa at pellentesque cursus velit, class dis. Diam condimentum donec blandit lacus aliquet consectetur. Gravida malesuada rutrum ligula mus nunc quisque ad et fringilla. In sociosqu natoque, urna posuere parturient est integer curae. Iaculis eros dis venenatis curae odio. Quis nec ipsum pharetra, facilisi sit curae? Amet ex hac nisl tristique habitant sem parturient.
+
+Praesent sollicitudin quis potenti, suspendisse dapibus cras. Interdum est varius at consectetur morbi tempus. Laoreet praesent dapibus enim torquent vivamus iaculis cubilia class. Felis eros fermentum per varius vestibulum orci tristique cubilia duis? Non ac interdum netus vehicula quis consequat. Sed lacus gravida vivamus fermentum magna. Velit pulvinar mauris bibendum nulla sollicitudin. Ac consectetur nisi lobortis; amet augue ex.
+
+Ligula hac purus maximus cursus nibh conubia at. Dapibus etiam fames taciti pharetra nascetur scelerisque scelerisque erat nulla. Nec orci maximus; efficitur accumsan felis ipsum. Tellus taciti nostra auctor rutrum curae pharetra facilisi erat. Suspendisse lobortis a nullam aenean ridiculus orci nostra sagittis. Cursus per diam viverra iaculis fringilla; lectus suspendisse tortor orci. Odio eget class rutrum proin auctor morbi. Auctor neque aliquam sed; convallis semper conubia lectus. Aliquam justo hac fusce himenaeos primis viverra fames. Mi aptent sollicitudin ante maecenas dis maximus phasellus ex.
+
+Leo metus ad lacus phasellus tristique. Facilisi velit torquent sodales tellus laoreet duis augue. Libero rutrum phasellus enim iaculis dis duis. At finibus lacus quisque libero est sem. Iaculis quisque placerat volutpat etiam urna tristique. Orci phasellus lacus massa aliquam condimentum. Ridiculus eleifend lorem vitae aliquet auctor facilisis. Sagittis lacus ipsum; congue magnis primis luctus. Eros duis ullamcorper sed porta mus viverra.
+
+Venenatis volutpat dignissim elementum vulputate nulla erat viverra. Nisi sollicitudin ligula dui ad rhoncus aptent morbi scelerisque? Nisi accumsan fames tempor id; massa pulvinar morbi mauris mi. Ac arcu cursus himenaeos; odio est sapien. Praesent metus vivamus hac nam arcu eros lacus. Arcu mauris suscipit inceptos vivamus; sit vivamus. Vel litora dolor nullam erat phasellus facilisi dolor at ligula. Sed rutrum himenaeos ultrices nam in mi; ut quisque. Velit venenatis sem semper nisl magna iaculis quis.
+
+Taciti primis non, elit sem ligula auctor. Mauris sapien morbi maximus; commodo eu ultricies. Consectetur ultricies nam arcu dignissim habitant. Suspendisse suspendisse auctor iaculis justo, turpis et. Id at sollicitudin elementum habitant taciti lacinia. Sit duis in platea accumsan; facilisi phasellus habitasse venenatis tincidunt. Ultricies amet turpis nascetur vel nascetur cras."
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/_12ssp" />
+
+
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="wrap_content"
+        app:rippleColor="#99FDFFF5"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:backgroundTint="@color/pestei"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_favorite_outline"
+        app:layout_anchor="@id/appBarLayout"
+        app:layout_anchorGravity="bottom|end"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

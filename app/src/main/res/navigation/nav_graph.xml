@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.CategoryFragment"
+        android:label="fragment_category"
+        tools:layout="@layout/fragment_category" >
+        <action
+            android:id="@+id/action_categoryFragment_to_categoryFoodsFragment"
+            app:destination="@id/categoryFoodsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/mealDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mealDetailFragment"
+            app:destination="@id/mealDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_categoryFoodsFragment"
+            app:destination="@id/categoryFoodsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFoodsFragment"
+            app:destination="@id/searchFoodsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mealDetailFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.MealDetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_meal_detail">
+
+        <argument
+            android:name="mealId"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_mealDetailFragment"
+            app:destination="@id/mealDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryFoodsFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.CategoryFoodsFragment"
+        android:label="fragment_category_foods"
+        tools:layout="@layout/fragment_category_foods">
+
+        <argument
+            android:name="categoryName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_categoryFoodsFragment_to_mealDetailFragment"
+            app:destination="@id/mealDetailFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/searchFoodsFragment"
+        android:name="com.shahpourkhast.rohamfood.ui.view.SearchFoodsFragment"
+        android:label="fragment_search_foods"
+        tools:layout="@layout/fragment_search_foods" >
+        <action
+            android:id="@+id/action_searchFoodsFragment_to_mealDetailFragment"
+            app:destination="@id/mealDetailFragment" />
+    </fragment>
+
+</navigation>
