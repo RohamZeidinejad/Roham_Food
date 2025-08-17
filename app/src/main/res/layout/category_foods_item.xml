@@ -15,13 +15,27 @@
         android:background="@color/pestei_dark"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/image"
+        <FrameLayout
             android:layout_width="@dimen/_128sdp"
             android:layout_height="@dimen/_128sdp"
-            android:layout_gravity="top"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background" />
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_launcher_background" />
+
+            <ImageView
+                android:id="@+id/iconImage"
+                android:layout_width="@dimen/_112sdp"
+                android:layout_height="@dimen/_112sdp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_img_error" />
+
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/foodName"

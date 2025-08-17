@@ -77,7 +77,7 @@ class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
                 Glide
                     .with(requireContext())
                     .load(meal.strMealThumb)
-                    .error(com.google.android.material.R.drawable.ic_clear_black_24)
+                    .error(R.drawable.ic_img_error)
                     .into(binding.image)
 
                 binding.name.text = meal.strMeal

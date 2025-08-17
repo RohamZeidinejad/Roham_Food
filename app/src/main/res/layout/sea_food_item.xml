@@ -7,10 +7,26 @@
     android:backgroundTint="?attr/colorPrimary"
     app:cardCornerRadius="@dimen/_16sdp">
 
-    <ImageView
-        android:id="@+id/image"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:id="@+id/iconImage"
+            android:layout_width="@dimen/_144sdp"
+            android:layout_height="@dimen/_144sdp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_loading" />
+
+    </FrameLayout>
+
+
 
 </com.google.android.material.card.MaterialCardView>
