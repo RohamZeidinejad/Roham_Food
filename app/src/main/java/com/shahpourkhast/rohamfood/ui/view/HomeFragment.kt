@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import com.bumptech.glide.request.target.Target
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,15 +25,14 @@ import com.shahpourkhast.rohamfood.databinding.FragmentHomeBinding
 import com.shahpourkhast.rohamfood.ui.adapter.CategoriesAdapter
 import com.shahpourkhast.rohamfood.ui.adapter.SeaFoodsAdapter
 import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModel
-import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomeViewModel by viewModels {
-        val database = FoodsDatabase.getDatabase(requireContext())
-        HomeViewModelFactory(database)
-    }
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var seaFoodsAdapter: SeaFoodsAdapter
     private lateinit var categoriesAdapter: CategoriesAdapter
 
@@ -67,46 +69,56 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     @SuppressLint("PrivateResource")
     private fun observeLetsMakeThis() {
 
-        viewModel.letsMakeThis.observe(viewLifecycleOwner) { food ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            if (food.meals.isNotEmpty()) {
-                val randomFood = food.meals[0]
-                val imageUrl = randomFood.strMealThumb
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                Glide
-                    .with(requireContext())
-                    .load(imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .error(R.drawable.ic_loading)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                viewModel.letsMakeThis.collect { food ->
 
-                            binding.iconImage.visibility = View.VISIBLE
-                            binding.image.visibility = View.GONE
-                            return false
+                    food?.let {
+                        if (it.meals.isNotEmpty()) {
+                            val randomFood = it.meals[0]
+                            val imageUrl = randomFood.strMealThumb
+
+                            Glide.with(requireContext())
+                                .load(imageUrl)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .error(R.drawable.ic_loading)
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+
+                                        binding.iconImage.visibility = View.VISIBLE
+                                        binding.image.visibility = View.GONE
+
+                                        return false
+
+                                    }
+
+                                    override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+
+                                        binding.image.visibility = View.VISIBLE
+                                        binding.iconImage.visibility = View.GONE
+
+                                        return false
+                                    }
+                                }).into(binding.image)
+
+                            binding.imageCard.setOnClickListener {
+                                val action = HomeFragmentDirections.actionHomeFragmentToMealDetailFragment(randomFood.idMeal)
+                                findNavController().navigate(action)
+
+                            }
 
                         }
 
-                        override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-
-                            binding.image.visibility = View.VISIBLE
-                            binding.iconImage.visibility = View.GONE
-                            return false
-
-                        }
-                    })
-                    .into(binding.image)
-
-                //-----------------------------------------------------------------------------
-
-                binding.imageCard.setOnClickListener {
-
-                    val action = HomeFragmentDirections.actionHomeFragmentToMealDetailFragment(randomFood.idMeal)
-                    findNavController().navigate(action)
+                    }
 
                 }
+
             }
+
         }
+
     }
 
     //---------------------------------------------------------
@@ -137,9 +149,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun observeSeaFoods() {
 
-        viewModel.seaFoods.observe(viewLifecycleOwner) { seaFoods ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            seaFoodsAdapter.submitList(seaFoods.meals)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.seaFoods.collect { seaFoods ->
+                    seaFoods?.let {
+
+                        seaFoodsAdapter.submitList(it.meals)
+
+                    }
+
+                }
+
+            }
 
         }
 
@@ -172,9 +195,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun observeCategories(){
 
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            categoriesAdapter.submitList(categories.categories)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.categories.collect { categories ->
+                    categories?.let {
+
+                        categoriesAdapter.submitList(it.categories)
+
+                    }
+
+                }
+
+            }
 
         }
 

@@ -8,34 +8,41 @@ import androidx.lifecycle.viewModelScope
 import com.shahpourkhast.rohamfood.data.dataClass.CategoriesData
 import com.shahpourkhast.rohamfood.data.database.FoodsDatabase
 import com.shahpourkhast.rohamfood.data.database.HomeFoodsData
+import com.shahpourkhast.rohamfood.data.repository.FavoritesRepository
 import com.shahpourkhast.rohamfood.data.repository.HomeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
-
-    private val repository = HomeRepository()
-
-    //-----------------------------------------------------------------------------
-
-    private val _letsMakeThis = MutableLiveData<HomeFoodsData>()
-    val letsMakeThis: LiveData<HomeFoodsData> = _letsMakeThis
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: HomeRepository ,
+    private val favoritesRepository: FavoritesRepository) : ViewModel() {
 
     //-----------------------------------------------------------------------------
 
-    private val _seaFoods = MutableLiveData<HomeFoodsData>()
-    val seaFoods: LiveData<HomeFoodsData> = _seaFoods
+    private val _letsMakeThis = MutableStateFlow<HomeFoodsData?>(null)
+    val letsMakeThis: StateFlow<HomeFoodsData?> = _letsMakeThis.asStateFlow()
 
     //-----------------------------------------------------------------------------
 
-    private val _categories = MutableLiveData<CategoriesData>()
-    val categories: LiveData<CategoriesData> = _categories
+    private val _seaFoods = MutableStateFlow<HomeFoodsData?>(null)
+    val seaFoods: StateFlow<HomeFoodsData?> = _seaFoods
 
     //-----------------------------------------------------------------------------
 
-    private val _searchFoods = MutableLiveData<HomeFoodsData?>()
-    val searchFoods: LiveData<HomeFoodsData?> = _searchFoods
+    private val _categories = MutableStateFlow<CategoriesData?>(null)
+    val categories: StateFlow<CategoriesData?> = _categories
+
+    //-----------------------------------------------------------------------------
+
+    private val _searchFoods = MutableStateFlow<HomeFoodsData?>(null)
+    val searchFoods: StateFlow<HomeFoodsData?> = _searchFoods
 
     //-----------------------------------------------------------------------------
 
@@ -56,7 +63,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
         try {
 
             val response = repository.getLetsMakeThis()
-            if (response.isSuccessful) _letsMakeThis.postValue(response.body())
+            if (response.isSuccessful) _letsMakeThis.value = response.body()
 
 
         } catch (e: Exception) {
@@ -73,7 +80,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
         try {
 
             val response = repository.getSeaFoods(categoryName)
-            if (response.isSuccessful) _seaFoods.postValue(response.body())
+            if (response.isSuccessful) _seaFoods.value = response.body()
 
         } catch (e: Exception) {
 
@@ -90,7 +97,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
         try {
 
             val response = repository.getCategories()
-            if (response.isSuccessful) _categories.postValue(response.body())
+            if (response.isSuccessful) _categories.value = response.body()
 
 
         } catch (e: Exception) {
@@ -103,7 +110,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
 
     //-----------------------------------------------------------------------------
 
-    fun getFavoriteFoodsDb() = foodsDatabase.foodsDao.getFavoriteFoodsDb()
+    fun getFavoriteFoodsDb() = favoritesRepository.getAll()
 
     //-----------------------------------------------------------------------------
 
@@ -118,7 +125,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
 
             if (searchQuery.isEmpty()) {
 
-                _searchFoods.postValue(null)
+                _searchFoods.value = null
                 return@launch
 
             }
@@ -127,7 +134,7 @@ class HomeViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
             try {
 
                 val response = repository.searchFoods(searchQuery)
-                if (response.isSuccessful) _searchFoods.postValue(response.body())
+                if (response.isSuccessful) _searchFoods.value = response.body()
 
 
             } catch (e: Exception) {

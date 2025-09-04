@@ -7,17 +7,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shahpourkhast.rohamfood.data.database.FoodsDatabase
 import com.shahpourkhast.rohamfood.data.database.HomeFoodsData
+import com.shahpourkhast.rohamfood.data.repository.FavoritesRepository
 import com.shahpourkhast.rohamfood.data.repository.HomeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MealDetailViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel() {
+@HiltViewModel
+class MealDetailViewModel @Inject constructor(
+    private val repository: HomeRepository,
+    private val favoritesRepository: FavoritesRepository) : ViewModel() {
 
-    private val repository = HomeRepository()
 
     //-----------------------------------------------------------------------------
 
-    private val _mealData = MutableLiveData<HomeFoodsData>()
-    val mealData: LiveData<HomeFoodsData> = _mealData
+    private val _mealData = MutableStateFlow<HomeFoodsData?>(null)
+    val mealData: StateFlow<HomeFoodsData?> = _mealData.asStateFlow()
 
     //-----------------------------------------------------------------------------
 
@@ -26,11 +34,7 @@ class MealDetailViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel(
         try {
 
             val response = repository.getMealDetail(id)
-            if (response.isSuccessful) {
-
-                _mealData.postValue(response.body())
-
-            }
+            if (response.isSuccessful) _mealData.value = response.body()
 
         } catch (e: Exception) {
 
@@ -44,7 +48,7 @@ class MealDetailViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel(
 
     fun insertfoodDb(food: HomeFoodsData.Meal) = viewModelScope.launch {
 
-        foodsDatabase.foodsDao.upsertFoodDb(food)
+      favoritesRepository.upsert(food)
 
     }
 
@@ -52,13 +56,13 @@ class MealDetailViewModel(private val foodsDatabase: FoodsDatabase) : ViewModel(
 
     fun deletefoodDb(food: HomeFoodsData.Meal) = viewModelScope.launch {
 
-        foodsDatabase.foodsDao.deleteFoodDb(food)
+        favoritesRepository.delete(food)
 
     }
 
     //-----------------------------------------------------------------------------
 
-    fun observeMealInFavorites(id: String) = foodsDatabase.foodsDao.observeFoodById(id)
+    fun observeMealInFavorites(id: String) = favoritesRepository.observeById(id)
 
 
 

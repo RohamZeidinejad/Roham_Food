@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,16 +16,16 @@ import com.shahpourkhast.rohamfood.data.database.FoodsDatabase
 import com.shahpourkhast.rohamfood.databinding.FragmentFavoritesBinding
 import com.shahpourkhast.rohamfood.ui.adapter.FavoritesAdapter
 import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModel
-import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
     private lateinit var favoritesAdapter: FavoritesAdapter
     private val args: CategoryFoodsFragmentArgs by navArgs()
-    private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(FoodsDatabase.getDatabase(requireContext()))
-    }
+    private val viewModel: HomeViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -72,12 +75,18 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     //---------------------------------------------------------
 
-
     private fun observeFoodsDb() {
 
-        viewModel.getFavoriteFoodsDb().observe(viewLifecycleOwner) { food ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            favoritesAdapter.submitList(food)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.getFavoriteFoodsDb().collect { food ->
+                    favoritesAdapter.submitList(food)
+
+                }
+
+            }
 
         }
 

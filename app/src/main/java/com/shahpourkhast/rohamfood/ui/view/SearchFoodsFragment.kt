@@ -7,23 +7,24 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.shahpourkhast.rohamfood.R
 import com.shahpourkhast.rohamfood.data.database.FoodsDatabase
 import com.shahpourkhast.rohamfood.databinding.FragmentSearchFoodsBinding
 import com.shahpourkhast.rohamfood.ui.adapter.SearchFoodsAdapter
 import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModel
-import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class SearchFoodsFragment : Fragment(R.layout.fragment_search_foods) {
     private var _binding: FragmentSearchFoodsBinding? = null
     private val binding get() = _binding!!
     private lateinit var searchFoodsAdapter: SearchFoodsAdapter
-    private val viewModel: HomeViewModel by viewModels {
-        val database = FoodsDatabase.getDatabase(requireContext())
-        HomeViewModelFactory(database)
-    }
+    private val viewModel: HomeViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,9 +79,16 @@ class SearchFoodsFragment : Fragment(R.layout.fragment_search_foods) {
 
     private fun observeSearchFoods(){
 
-        viewModel.searchFoods.observe(viewLifecycleOwner) { food ->
+        lifecycleScope.launch {
 
-            searchFoodsAdapter.submitList(food?.meals)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.searchFoods.collect { food ->
+                    searchFoodsAdapter.submitList(food?.meals)
+
+                }
+
+            }
 
         }
 

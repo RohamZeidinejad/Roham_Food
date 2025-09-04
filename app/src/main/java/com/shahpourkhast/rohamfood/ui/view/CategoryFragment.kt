@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +15,14 @@ import com.shahpourkhast.rohamfood.data.database.FoodsDatabase
 import com.shahpourkhast.rohamfood.databinding.FragmentCategoryBinding
 import com.shahpourkhast.rohamfood.ui.adapter.CategoriesAdapter
 import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModel
-import com.shahpourkhast.rohamfood.ui.viewModel.HomeViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CategoryFragment : Fragment(R.layout.fragment_category) {
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomeViewModel by viewModels {
-        val database = FoodsDatabase.getDatabase(requireContext())
-        HomeViewModelFactory(database)
-    }
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var categoriesAdapter: CategoriesAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,11 +71,23 @@ class CategoryFragment : Fragment(R.layout.fragment_category) {
 
     //---------------------------------------------------------
 
-    private fun observeCategories(){
+    private fun observeCategories() {
 
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            categoriesAdapter.submitList(categories.categories)
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.categories.collect { categories ->
+
+                    categories?.let {
+
+                    categoriesAdapter.submitList(categories.categories)
+
+                    }
+
+                }
+
+            }
 
         }
 

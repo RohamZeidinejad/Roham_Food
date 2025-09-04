@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.shahpourkhast.rohamfood.R
@@ -14,18 +17,17 @@ import com.shahpourkhast.rohamfood.data.database.HomeFoodsData
 import com.shahpourkhast.rohamfood.databinding.CustomToastBinding
 import com.shahpourkhast.rohamfood.databinding.FragmentMealDetailBinding
 import com.shahpourkhast.rohamfood.ui.viewModel.MealDetailViewModel
-import com.shahpourkhast.rohamfood.ui.viewModel.MealDetailViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
     private var _binding: FragmentMealDetailBinding? = null
     private val binding get() = _binding!!
     private var isMealInFavorites = false
     private val args: MealDetailFragmentArgs by navArgs()
     private var food: HomeFoodsData.Meal? = null
-    private val viewModel: MealDetailViewModel by viewModels {
-        val database = FoodsDatabase.getDatabase(requireContext())
-        MealDetailViewModelFactory(database)
-    }
+    private val viewModel: MealDetailViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,39 +68,37 @@ class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
 
     private fun observeMealDetail() {
 
-        viewModel.mealData.observe(viewLifecycleOwner) { mealData ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            if (mealData != null && mealData.meals.isNotEmpty()) {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                val meal = mealData.meals[0]
+                viewModel.mealData.collect { mealData ->
 
-                food = meal
+                    val meal = mealData?.meals?.firstOrNull() ?: return@collect
+                    food = meal
 
-                Glide
-                    .with(requireContext())
-                    .load(meal.strMealThumb)
-                    .error(R.drawable.ic_img_error)
-                    .into(binding.image)
+                    Glide.with(requireContext())
+                        .load(meal.strMealThumb)
+                        .error(R.drawable.ic_img_error)
+                        .into(binding.image)
 
-                binding.name.text = meal.strMeal
-                binding.area.text = meal.strArea
-                binding.category.text = meal.strCategory
-                binding.instruction.text = meal.strInstructions
+                    binding.name.text = meal.strMeal
+                    binding.area.text = meal.strArea
+                    binding.category.text = meal.strCategory
+                    binding.instruction.text = meal.strInstructions
+                }
 
             }
+
         }
+
     }
 
     //---------------------------------------------------------
 
     private fun collapsingToolbarOptions() {
 
-        binding.collapsingToolBar.setExpandedTitleColor(
-            ContextCompat.getColor(
-                requireContext(),
-                android.R.color.transparent
-            )
-        )
+        binding.collapsingToolBar.setExpandedTitleColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
 
     }
 
@@ -107,6 +107,8 @@ class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
     private fun favoriteButton() {
 
         binding.favoriteButton.setOnClickListener {
+
+            food?.let { meal ->
 
             isMealInFavorites = !isMealInFavorites
 
@@ -124,6 +126,7 @@ class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
                 viewModel.deletefoodDb(food!!)
                 showCustomToast("Food removed from favorites")
 
+                }
             }
         }
     }
@@ -132,18 +135,18 @@ class MealDetailFragment : Fragment(R.layout.fragment_meal_detail) {
 
     private fun observeFavoriteStatus() {
 
-        viewModel.observeMealInFavorites(args.mealId).observe(viewLifecycleOwner) { food ->
+        viewLifecycleOwner.lifecycleScope.launch {
 
-            if (food != null) {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                isMealInFavorites = true
-                binding.favoriteButton.setImageResource(R.drawable.ic_favorite_bold)
+                viewModel.observeMealInFavorites(args.mealId).collect { result ->
 
-            } else {
+                    isMealInFavorites = result != null
+                    val iconRes = if (isMealInFavorites) { R.drawable.ic_favorite_bold } else { R.drawable.ic_favorite_outline }
 
-                isMealInFavorites = false
-                binding.favoriteButton.setImageResource(R.drawable.ic_favorite_outline)
+                    binding.favoriteButton.setImageResource(iconRes)
 
+                }
             }
         }
     }
